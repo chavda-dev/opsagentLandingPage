@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpsAgent — AI Agent for Small Business Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ──────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── TOKENS ─────────────────────────────────────────────────────── */
+:root{
+  --bg:#FAFAF7;
+  --surface:#F2F0EB;
+  --border:#E4E0D8;
+  --text:#1C1917;
+  --text2:#78716C;
+  --text3:#A8A29E;
+  --accent:#C96A2A;
+  --accent-l:#FDF3EC;
+  --dark:#1C1917;
+  --nav-h:60px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+/* ─── NAV ────────────────────────────────────────────────────────── */
+nav{
+  position:fixed;inset:0 0 auto 0;
+  z-index:200;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;
+  background:rgba(250,250,247,.92);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:500;
+  color:var(--text);text-decoration:none;flex-shrink:0;
+}
+.nav-r{display:flex;align-items:center;gap:28px}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:14px;font-weight:400;color:var(--text2);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.btn-pill{
+  font-size:13px;font-weight:500;color:#fff;background:var(--accent);
+  text-decoration:none;padding:7px 18px;border-radius:100px;
+  transition:opacity .15s;white-space:nowrap;
+}
+.btn-pill:hover{opacity:.82}
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  background:none;border:none;cursor:pointer;padding:8px 4px;margin-left:4px;
+}
+.hamburger span{
+  display:block;width:22px;height:1.5px;background:var(--text);
+  border-radius:2px;transform-origin:center;
+  transition:transform .22s ease,opacity .15s;
+}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px)}
+
+.mobile-nav{
+  display:none;
+  position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+  background:rgba(250,250,247,.97);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  flex-direction:column;padding:8px 0 16px;
+  opacity:0;transform:translateY(-8px);pointer-events:none;
+  transition:opacity .2s,transform .2s;
+}
+.mobile-nav.open{display:flex;opacity:1;transform:translateY(0);pointer-events:all}
+.mobile-nav a{
+  font-size:16px;font-weight:400;color:var(--text2);text-decoration:none;
+  padding:14px 24px;border-bottom:1px solid var(--border);
+  transition:color .12s,background .12s;display:block;
+}
+.mobile-nav a:last-of-type{border-bottom:none}
+.mobile-nav a:hover{color:var(--text);background:var(--surface)}
+.mobile-cta-row{padding:16px 24px 0}
+.mobile-cta-btn{
+  display:block;font-size:15px;font-weight:500;
+  color:#fff;background:var(--accent);text-decoration:none;
+  padding:13px 22px;border-radius:8px;text-align:center;
+  transition:opacity .15s;
+}
+.mobile-cta-btn:hover{opacity:.82}
+
+/* ─── HERO ───────────────────────────────────────────────────────── */
+.hero{
+  display:grid;grid-template-columns:52fr 48fr;
+  min-height:100vh;padding-top:var(--nav-h);
+}
+.hero-l{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:72px 64px 72px 56px;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px 5px 10px;
+  border:1px solid rgba(201,106,42,.35);border-radius:100px;
+  background:var(--accent-l);font-size:11.5px;font-weight:500;
+  color:var(--accent);width:fit-content;margin-bottom:40px;
+}
+.badge-dot{
+  width:6px;height:6px;min-width:6px;border-radius:50%;
+  background:var(--accent);animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+.hero-h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,6.2vw,88px);
+  font-weight:400;line-height:1.0;margin-bottom:28px;letter-spacing:-.01em;
+}
+.hero-h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{
+  font-size:clamp(15px,1.5vw,17px);font-weight:300;
+  color:var(--text3);line-height:1.72;max-width:400px;margin-bottom:40px;
+}
+.hero-btns{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn-filled{
+  font-size:14px;font-weight:500;color:#fff;background:var(--accent);
+  text-decoration:none;padding:13px 24px;border-radius:8px;
+  transition:opacity .15s;min-height:44px;display:inline-flex;align-items:center;
+}
+.btn-filled:hover{opacity:.82}
+.btn-outline{
+  font-size:14px;font-weight:400;color:var(--text2);
+  text-decoration:none;padding:12px 24px;border-radius:8px;
+  border:1px solid var(--border);
+  transition:border-color .15s,color .15s;
+  min-height:44px;display:inline-flex;align-items:center;
+}
+.btn-outline:hover{border-color:var(--text3);color:var(--text)}
+
+/* Hero right */
+.hero-r{
+  background:var(--surface);border-left:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  padding:72px 48px;position:relative;overflow:hidden;
+}
+.hero-r::before{
+  content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    0deg,transparent,transparent 39px,
+    rgba(228,224,216,.45) 39px,rgba(228,224,216,.45) 40px
+  );pointer-events:none;
+}
+.hero-visual-wrap{width:100%;max-width:340px;position:relative;z-index:2}
+
+/* Agent card */
+.agent-card{
+  position:relative;z-index:2;background:#fff;
+  border:1px solid var(--border);border-radius:14px;width:100%;
+  box-shadow:0 1px 3px rgba(28,25,23,.05),0 8px 24px rgba(28,25,23,.07),0 24px 56px rgba(28,25,23,.09);
+  overflow:hidden;
+}
+.ac-hdr{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.ac-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.ac-title{font-size:13px;font-weight:600;color:var(--text);line-height:1}
+.ac-sub{font-size:10.5px;color:var(--text3);margin-top:2px}
+.chat-area{padding:16px;display:flex;flex-direction:column;gap:10px}
+.bubble{border-radius:10px;padding:9px 13px;font-size:12px;line-height:1.5;max-width:90%}
+.bubble-u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:3px}
+.bubble-a{align-self:flex-start;background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
+.a-tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.a-tbl th{text-align:left;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);padding:3px 5px;border-bottom:1px solid var(--border)}
+.a-tbl td{font-size:11px;color:var(--text2);padding:4px 5px;border-bottom:1px solid rgba(228,224,216,.45)}
+.a-tbl tr:last-child td{border-bottom:none}
+.sbadge{display:inline-flex;align-items:center;padding:1.5px 6px;border-radius:100px;font-size:9px;font-weight:600}
+.sbadge-sm{font-size:8.5px}
+.s-pend{background:#FFF7ED;color:var(--accent)}
+.s-done{background:#ECFDF5;color:#059669}
+.ac-foot{padding:10px 14px 12px;border-top:1px solid var(--border)}
+.chips{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.chip{font-size:10px;font-weight:500;color:var(--accent);background:var(--accent-l);border:1px solid rgba(201,106,42,.2);border-radius:100px;padding:3px 10px}
+.a-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-size:11px;color:var(--text3);font-family:'Outfit',sans-serif;outline:none}
+
+/* Mini dash */
+.mini-dash{
+  position:relative;z-index:1;margin-top:10px;background:#fff;
+  border:1px solid var(--border);border-radius:10px;
+  display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden;
+  box-shadow:0 2px 12px rgba(28,25,23,.05);
+}
+.md-cell{padding:12px 14px;border-right:1px solid var(--border)}
+.md-cell:last-child{border-right:none}
+.md-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);line-height:1;margin-bottom:3px}
+.md-val.hi{color:var(--accent)}
+.md-lbl{font-size:9.5px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--text3)}
+
+/* ─── STATS ──────────────────────────────────────────────────────── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.stat{padding:44px 48px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(34px,3.8vw,52px);font-weight:400;
+  color:var(--text);line-height:1;margin-bottom:8px;display:block;
+}
+.stat-val.accent{color:var(--accent)}
+.stat-lbl{font-size:11.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);display:block}
+.stat-sub{font-size:12px;color:var(--text3);margin-top:3px;display:block}
+/* Thin progress bar under each stat */
+.stat-track{
+  height:2px;background:var(--border);border-radius:2px;
+  margin-top:20px;overflow:hidden;
+}
+.stat-fill{
+  height:100%;border-radius:2px;background:var(--text3);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .9s cubic-bezier(.16,1,.3,1);
+}
+.stat-fill.accent{background:var(--accent)}
+.stat-fill.visible{transform:scaleX(1)}
+
+/* ─── SHARED SECTION ─────────────────────────────────────────────── */
+.sec-wrap{max-width:1100px;margin:0 auto;padding:0 56px}
+.sec-head{margin-bottom:52px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:block}
+.sec-h{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.8vw,48px);font-weight:400;color:var(--text);line-height:1.08}
+
+/* ─── FEATURES ───────────────────────────────────────────────────── */
+#features{background:var(--surface);padding:96px 0}
+
+.feat-row{
+  display:grid;
+  grid-template-columns:52px 1fr 88px 28px;
+  gap:0 24px;align-items:center;
+  padding:28px 0;border-top:1px solid var(--border);cursor:default;
+  transition:background .18s;
+}
+.feat-row:last-child{border-bottom:1px solid var(--border)}
+.feat-num{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:400;letter-spacing:.06em;color:var(--text3)}
+.feat-body{display:flex;flex-direction:column;gap:6px;align-self:start;padding:2px 0}
+.feat-title{font-size:15px;font-weight:600;color:var(--text);line-height:1.3}
+.feat-desc{font-size:14px;font-weight:400;color:var(--text2);line-height:1.72;max-width:540px}
+.feat-arrow{font-size:17px;color:var(--text3);transition:color .15s,transform .2s;line-height:1.4;text-align:right}
+
+/* ── Feature visual illustrations ──────────────────────────────── */
+.feat-visual{width:88px;display:flex;align-items:center;justify-content:center;height:52px;flex-shrink:0}
+
+/* 01 – Chat bubbles */
+.fv-chat{position:relative;width:80px;height:48px}
+.fv-cb-a{position:absolute;top:0;left:0;width:62px;height:17px;background:#fff;border:1px solid var(--border);border-radius:8px 8px 8px 2px;display:flex;align-items:center;padding:0 8px;gap:3px}
+.fv-cb-a span{width:4px;height:4px;border-radius:50%;background:var(--border)}
+.fv-cb-b{position:absolute;bottom:0;right:0;width:50px;height:15px;background:rgba(201,106,42,.18);border:1px solid rgba(201,106,42,.3);border-radius:8px 8px 2px 8px}
+
+/* 02 – Inventory bars */
+.fv-bars{display:flex;flex-direction:column;gap:5px;width:80px;padding:4px 0}
+.fv-bar{height:5px;border-radius:3px;background:var(--border)}
+.fv-bar:nth-child(1){width:100%;background:var(--text3);opacity:.7}
+.fv-bar:nth-child(2){width:76%;background:var(--border)}
+.fv-bar:nth-child(3){width:52%;background:var(--border)}
+.fv-bar:nth-child(4){width:28%;background:rgba(201,106,42,.45)}
+
+/* 03 – Kanban columns */
+.fv-kanban{display:flex;gap:5px;align-items:flex-end;height:48px;width:80px}
+.fv-kcol{flex:1;border:1px solid var(--border);border-radius:3px;background:var(--bg)}
+.fv-kcol:nth-child(1){height:100%}
+.fv-kcol:nth-child(2){height:65%}
+.fv-kcol:nth-child(3){height:38%}
+/* Dots inside kanban columns */
+.fv-kcol::before{
+  content:'';display:block;width:12px;height:3px;background:var(--border);
+  border-radius:2px;margin:6px auto 3px;
+}
+.fv-kcol::after{
+  content:'';display:block;width:12px;height:3px;background:var(--border);
+  border-radius:2px;margin:0 auto;opacity:.5;
+}
+
+/* 04 – Calendar week */
+.fv-cal{display:flex;flex-direction:column;gap:4px;width:80px}
+.fv-cal-row{display:flex;gap:4px}
+.fv-day{width:9px;height:9px;border-radius:2px;background:var(--border)}
+.fv-day.active{background:var(--accent)}
+.fv-day.dim{background:rgba(228,224,216,.5)}
+
+/* 05 – Analytics bars */
+.fv-chart{display:flex;gap:6px;align-items:flex-end;height:48px;width:80px}
+.fv-cbar{border-radius:2px 2px 0 0}
+.fv-cbar:nth-child(1){flex:1;height:38%;background:var(--border)}
+.fv-cbar:nth-child(2){flex:1;height:80%;background:var(--text3);opacity:.5}
+.fv-cbar:nth-child(3){flex:1;height:55%;background:var(--border)}
+.fv-cbar:nth-child(4){flex:1;height:100%;background:var(--accent);opacity:.5}
+.fv-cbar:nth-child(5){flex:1;height:65%;background:var(--border)}
+
+/* 06 – Database rings */
+.fv-db{display:flex;flex-direction:column;gap:5px;align-items:center;width:80px;padding:4px 0}
+.fv-dring{width:64px;height:11px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg)}
+.fv-dring:nth-child(1){border-color:rgba(201,106,42,.4);background:rgba(201,106,42,.06)}
+.fv-dring:nth-child(2){border-color:var(--border)}
+.fv-dring:nth-child(3){border-color:var(--border);opacity:.6}
+
+/* ─── PRODUCT SHOWCASE ────────────────────────────────────────────── */
+#showcase{background:#fff;padding:96px 0 112px}
+.showcase-head{text-align:center;margin-bottom:56px}
+.showcase-head .eyebrow{justify-content:center}
+
+/* Full browser mockup */
+.browser{
+  max-width:960px;margin:0 auto;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 2px 8px rgba(28,25,23,.04),0 12px 40px rgba(28,25,23,.07),0 40px 80px rgba(28,25,23,.07);
+  overflow:hidden;
+}
+.browser-bar{
+  display:flex;align-items:center;padding:11px 16px;
+  background:#f0ede8;border-bottom:1px solid var(--border);position:relative;
+}
+.browser-dots{display:flex;gap:6px;align-items:center}
+.bdot{width:11px;height:11px;border-radius:50%}
+.bdot:nth-child(1){background:#FF5F57}
+.bdot:nth-child(2){background:#FEBC2E}
+.bdot:nth-child(3){background:#28C840}
+.browser-url{
+  position:absolute;left:50%;transform:translateX(-50%);
+  background:rgba(28,25,23,.07);border-radius:6px;
+  padding:3px 16px;font-size:11px;color:var(--text3);
+  min-width:220px;text-align:center;
+}
+.browser-body{display:grid;grid-template-columns:1fr 1fr;min-height:380px}
+
+/* Dashboard panel */
+.db-panel{padding:20px 22px;border-right:1px solid var(--border)}
+.db-sec-lbl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
+.kpi{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 13px}
+.kpi-lbl{font-size:9.5px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.kpi-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);line-height:1.1}
+.kpi-val.hi{color:var(--accent)}
+.kpi-stocked{font-size:12px;font-weight:500;color:#059669;margin-top:3px}
+.kpi-sub{font-size:9.5px;color:var(--text3);margin-top:2px}
+.db-tbl{width:100%;border-collapse:collapse}
+.db-tbl th{text-align:left;font-size:9.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);padding:5px 7px;border-bottom:1px solid var(--border)}
+.db-tbl td{font-size:11.5px;color:var(--text2);padding:6px 7px;border-bottom:1px solid rgba(228,224,216,.5)}
+.db-tbl tr:last-child td{border-bottom:none}
+
+/* Agent panel */
+.ag-panel{display:flex;flex-direction:column;background:var(--surface)}
+.ag-hdr{padding:13px 16px;border-bottom:1px solid var(--border)}
+.ag-name{font-size:13px;font-weight:600;color:var(--text)}
+.ag-tag{font-size:10.5px;color:var(--text3);margin-top:2px}
+.ag-chat{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.ag-foot{padding:10px 14px 12px;border-top:1px solid var(--border);background:#fff}
+
+/* ─── HOW IT WORKS ───────────────────────────────────────────────── */
+#how-it-works{background:var(--surface);padding:96px 0}
+.hiw-head{margin-bottom:0}
+.steps-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border);margin-top:52px;
+}
+.step{padding:48px 48px 56px;border-right:1px solid var(--border)}
+.step:last-child{border-right:none}
+.step-bg-n{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(72px,8vw,100px);font-weight:300;color:var(--border);
+  line-height:1;display:block;margin-bottom:-10px;
+  -webkit-user-select:none;user-select:none;pointer-events:none;
+}
+.step-t{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2vw,24px);font-weight:500;color:var(--text);margin-bottom:12px;line-height:1.2}
+.step-d{font-size:14px;color:var(--text2);line-height:1.72}
+
+/* Step visual examples */
+.step-eg{margin-top:22px}
+
+/* Step 1: command input */
+.step-cmd{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:15px;color:var(--text2);
+  background:#fff;border:1px solid var(--border);
+  border-radius:8px;padding:9px 16px;
+}
+.step-cmd-prefix{color:var(--text3);font-style:normal;font-family:'Outfit',sans-serif;font-size:12px}
+
+/* Step 2: tool call */
+.step-tool{
+  display:inline-block;
+  background:var(--dark);border-radius:8px;padding:11px 16px;
+  font-size:11px;font-family:'Courier New',monospace;
+}
+.tt-name{color:rgba(201,106,42,.9);display:block;margin-bottom:4px;font-size:11px}
+.tt-arg{color:rgba(255,255,255,.38);font-size:10px}
+
+/* Step 3: result preview */
+.step-result{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--accent-l);
+  border:1px solid rgba(201,106,42,.2);border-radius:8px;padding:10px 16px;
+}
+.sr-count{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--accent);line-height:1}
+.sr-label{font-size:12px;color:var(--text2);line-height:1.4}
+
+/* ─── TECH ───────────────────────────────────────────────────────── */
+.tech{
+  background:#fff;padding:52px 0;text-align:center;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.tech-lbl{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:20px;display:block}
+.pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 24px}
+.pill{font-size:13px;font-weight:500;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:8px 18px}
+
+/* ─── CTA ────────────────────────────────────────────────────────── */
+#cta{background:var(--dark);display:grid;grid-template-columns:1fr 1fr;min-height:420px}
+.cta-l{padding:88px 64px 88px 56px;border-right:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;justify-content:center}
+.cta-h{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,68px);font-weight:400;color:#fff;line-height:1.02}
+.cta-h em{font-style:italic;color:rgba(255,255,255,.5)}
+.cta-r{padding:88px 56px 88px 64px;display:flex;flex-direction:column;justify-content:center}
+.cta-sub{font-size:16px;font-weight:300;color:rgba(255,255,255,.42);line-height:1.72;margin-bottom:40px;max-width:340px}
+.cta-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-w{font-size:14px;font-weight:500;color:var(--dark);background:#fff;text-decoration:none;padding:13px 24px;border-radius:8px;min-height:44px;display:inline-flex;align-items:center;transition:opacity .15s}
+.btn-w:hover{opacity:.88}
+.btn-ow{font-size:14px;font-weight:400;color:rgba(255,255,255,.62);text-decoration:none;padding:12px 24px;border-radius:8px;border:1px solid rgba(255,255,255,.18);min-height:44px;display:inline-flex;align-items:center;transition:border-color .15s,color .15s}
+.btn-ow:hover{border-color:rgba(255,255,255,.42);color:#fff}
+
+/* ─── FOOTER ─────────────────────────────────────────────────────── */
+footer{
+  background:var(--dark);border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28px 56px;gap:16px;
+}
+.foot-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:#fff;flex-shrink:0}
+.foot-links{display:flex;gap:24px;flex-wrap:wrap}
+.foot-links a{font-size:13px;color:rgba(255,255,255,.34);text-decoration:none;transition:color .15s}
+.foot-links a:hover{color:rgba(255,255,255,.7)}
+.foot-r{font-size:12px;color:rgba(255,255,255,.24);flex-shrink:0;text-align:right}
+
+/* ─── FADE-IN ────────────────────────────────────────────────────── */
+.fi{opacity:0;transform:translateY(18px);transition:opacity .52s ease,transform .52s ease}
+.fi.in{opacity:1;transform:translateY(0)}
+
+/* ─── HOVER (pointer devices only) ──────────────────────────────── */
+@media(hover:hover){
+  .feat-row:hover{background:rgba(228,224,216,.3)}
+  .feat-row:hover .feat-arrow{color:var(--accent);transform:translateX(4px)}
+}
+
+/* ─── 1280px ─────────────────────────────────────────────────────── */
+@media(max-width:1280px){
+  nav{padding:0 32px}
+  .hero-l{padding:72px 52px 72px 40px}
+  .hero-r{padding:60px 36px}
+  .stat{padding:40px 36px}
+  .sec-wrap{padding:0 40px}
+  .step{padding:44px 40px 52px}
+  .cta-l{padding:80px 52px 80px 40px}
+  .cta-r{padding:80px 40px 80px 52px}
+  footer{padding:28px 40px}
+  .browser{margin:0 40px}
+}
+
+/* ─── 1024px ─────────────────────────────────────────────────────── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;grid-template-rows:auto auto;min-height:0}
+  .hero-l{min-height:calc(100vh - var(--nav-h));padding:60px 40px 56px;justify-content:center}
+  .hero-r{border-left:none;border-top:1px solid var(--border);padding:56px 40px 64px;min-height:0}
+  .hero-visual-wrap{max-width:420px;margin:0 auto}
+
+  /* Features: hide visual column */
+  .feat-row{grid-template-columns:52px 1fr 28px;gap:0 20px}
+  .feat-visual{display:none}
+
+  /* Steps: 2 col */
+  .steps-grid{grid-template-columns:1fr 1fr}
+  .step{border-right:1px solid var(--border)}
+  .step:nth-child(2){border-right:none}
+  .step:nth-child(3){border-top:1px solid var(--border);border-right:none;grid-column:1/-1}
+
+  #cta{grid-template-columns:1fr;min-height:0}
+  .cta-l{padding:72px 40px 48px;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+  .cta-r{padding:48px 40px 72px}
+  footer{padding:28px 40px}
+
+  .browser{margin:0 32px}
+  .browser-body{grid-template-columns:1fr}
+  .ag-panel{display:none}
+  .db-panel{border-right:none}
+}
+
+/* ─── 768px ──────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links,.btn-pill{display:none}
+  .hamburger{display:flex}
+
+  .hero-l{padding:48px 20px 52px;min-height:calc(100vh - var(--nav-h))}
+  .hero-h1{font-size:clamp(44px,11vw,62px)}
+  .hero-sub{max-width:100%;font-size:16px}
+  .hero-btns{flex-direction:column;gap:10px;width:100%}
+  .btn-filled,.btn-outline{width:100%;justify-content:center;font-size:15px}
+  .hero-r{display:none}
+
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{padding:28px 24px}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(3){border-top:1px solid var(--border)}
+  .stat:nth-child(4){border-right:none;border-top:1px solid var(--border)}
+
+  #features{padding:72px 0}
+  .sec-wrap{padding:0 20px}
+  .feat-row{grid-template-columns:40px 1fr 24px;gap:0 14px;padding:24px 0}
+
+  #showcase{padding:72px 0 80px}
+  .browser{margin:0 20px}
+  .browser-body{min-height:0}
+  .ag-panel{display:none}
+  .db-panel{border-right:none;padding:16px 18px}
+  .kpi-grid{gap:8px;margin-bottom:16px}
+
+  #how-it-works{padding:72px 0}
+  .steps-grid{grid-template-columns:1fr}
+  .step{border-right:none;border-bottom:1px solid var(--border);padding:36px 20px 40px;grid-column:auto !important}
+  .step:last-child{border-bottom:none}
+  .step:nth-child(3){border-top:none}
+
+  .cta-l{padding:64px 20px 40px}
+  .cta-r{padding:36px 20px 64px}
+  .cta-sub{font-size:15px;max-width:100%}
+  .cta-btns{flex-direction:column;gap:10px}
+  .btn-w,.btn-ow{width:100%;justify-content:center;font-size:15px}
+
+  footer{flex-direction:column;gap:20px;text-align:center;padding:32px 20px}
+  .foot-r{text-align:center}
+  .foot-links{justify-content:center;gap:20px}
+}
+
+/* ─── 480px ──────────────────────────────────────────────────────── */
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr}
+  .stat{border-right:none !important;border-top:1px solid var(--border);padding:24px 20px}
+  .stat:first-child{border-top:none}
+
+  .badge{font-size:11px}
+  .feat-row{grid-template-columns:32px 1fr 20px;gap:0 10px}
+  .feat-title{font-size:14.5px}
+
+  #features,#how-it-works,#showcase{padding:60px 0}
+  .sec-head{margin-bottom:40px}
+  .step{padding:32px 20px 36px}
+  .step-bg-n{font-size:68px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">OpsAgent</a>
+  <div class="nav-r">
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="https://github.com/chavda-dev/opsagent" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+    <a class="btn-pill" href="https://opsagent-lac.vercel.app" target="_blank" rel="noopener">Open App →</a>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav" role="navigation">
+  <a href="#features">Features</a>
+  <a href="#how-it-works">How it works</a>
+  <a href="https://github.com/chavda-dev/opsagent" target="_blank" rel="noopener">GitHub</a>
+  <div class="mobile-cta-row">
+    <a class="mobile-cta-btn" href="https://opsagent-lac.vercel.app" target="_blank" rel="noopener">Open Live App →</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-l">
+    <div class="badge fi" data-delay="0">
+      <span class="badge-dot"></span>
+      Google Cloud Rapid Agent Hackathon · MongoDB Track
+    </div>
+    <h1 class="hero-h1 fi" data-delay="110">
+      Your business,<br>one sentence<br><em>away.</em>
+    </h1>
+    <p class="hero-sub fi" data-delay="220">
+      OpsAgent understands plain English. Ask about inventory,
+      orders, appointments — and get structured answers, instantly.
+    </p>
+    <div class="hero-btns fi" data-delay="330">
+      <a class="btn-filled" href="https://opsagent-lac.vercel.app" target="_blank" rel="noopener">Open Live Demo →</a>
+      <a class="btn-outline" href="https://github.com/chavda-dev/opsagent" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="hero-visual-wrap">
+      <div class="agent-card fi" data-delay="200">
+        <div class="ac-hdr">
+          <div class="ac-dot"></div>
+          <div>
+            <div class="ac-title">AI Agent</div>
+            <div class="ac-sub">Gemini + MongoDB MCP</div>
+          </div>
+        </div>
+        <div class="chat-area">
+          <div class="bubble bubble-u">how many pending orders?</div>
+          <div class="bubble bubble-a">
+            You have <strong>3 pending orders</strong> totalling <strong>$176</strong>.
+            <table class="a-tbl">
+              <thead><tr><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Pooja Gupta</td><td>$101</td><td><span class="sbadge s-pend">Pending</span></td></tr>
+                <tr><td>Suresh Iyer</td><td>$30</td><td><span class="sbadge s-pend">Pending</span></td></tr>
+                <tr><td>Amit Shah</td><td>$45</td><td><span class="sbadge s-pend">Pending</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ac-foot">
+          <div class="chips">
+            <span class="chip">Low stock</span>
+            <span class="chip">Pending orders</span>
+            <span class="chip">Summary</span>
+          </div>
+          <input class="a-input" type="text" placeholder='Try: "show low stock items..."' readonly>
+        </div>
+      </div>
+      <div class="mini-dash fi" data-delay="320">
+        <div class="md-cell"><div class="md-val">$15K</div><div class="md-lbl">Inventory</div></div>
+        <div class="md-cell"><div class="md-val hi">7</div><div class="md-lbl">Pending</div></div>
+        <div class="md-cell"><div class="md-val">50+</div><div class="md-lbl">Products</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat fi">
+    <span class="stat-val">$15,067</span>
+    <span class="stat-lbl">Inventory value</span>
+    <span class="stat-sub">Live in demo dataset</span>
+    <div class="stat-track"><div class="stat-fill" data-w="0.70"></div></div>
+  </div>
+  <div class="stat fi" data-delay="60">
+    <span class="stat-val accent">7</span>
+    <span class="stat-lbl">Pending orders</span>
+    <span class="stat-sub">Tracked in real time</span>
+    <div class="stat-track"><div class="stat-fill accent" data-w="0.35"></div></div>
+  </div>
+  <div class="stat fi" data-delay="120">
+    <span class="stat-val">50+</span>
+    <span class="stat-lbl">Products tracked</span>
+    <span class="stat-sub">With stock levels &amp; value</span>
+    <div class="stat-track"><div class="stat-fill" data-w="0.85"></div></div>
+  </div>
+  <div class="stat fi" data-delay="180">
+    <span class="stat-val">1</span>
+    <span class="stat-lbl">Live deployment</span>
+    <span class="stat-sub">Real data on Vercel</span>
+    <div class="stat-track"><div class="stat-fill" data-w="1"></div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <span class="eyebrow fi">Features</span>
+      <h2 class="sec-h fi" data-delay="80">Everything your<br>business needs</h2>
+    </div>
+
+    <div class="feat-row fi">
+      <span class="feat-num">01</span>
+      <div class="feat-body">
+        <div class="feat-title">Natural Language Queries</div>
+        <p class="feat-desc">Ask in plain English. The agent maps intent to MongoDB MCP tool calls automatically — no SQL, no dashboards.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-chat">
+          <div class="fv-cb-a"><span></span><span></span><span></span></div>
+          <div class="fv-cb-b"></div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+
+    <div class="feat-row fi" data-delay="50">
+      <span class="feat-num">02</span>
+      <div class="feat-body">
+        <div class="feat-title">Inventory Management</div>
+        <p class="feat-desc">50+ items with visual stock bars, category filters, low-stock detection, and card/table view toggle.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-bars">
+          <div class="fv-bar"></div><div class="fv-bar"></div>
+          <div class="fv-bar"></div><div class="fv-bar"></div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+
+    <div class="feat-row fi" data-delay="100">
+      <span class="feat-num">03</span>
+      <div class="feat-body">
+        <div class="feat-title">Orders Kanban</div>
+        <p class="feat-desc">Drag-and-drop board across Pending, Completed, and Cancelled columns — backed by live Atlas data.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-kanban">
+          <div class="fv-kcol"></div>
+          <div class="fv-kcol"></div>
+          <div class="fv-kcol"></div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+
+    <div class="feat-row fi" data-delay="150">
+      <span class="feat-num">04</span>
+      <div class="feat-body">
+        <div class="feat-title">Appointments Calendar</div>
+        <p class="feat-desc">Week-view calendar with customer appointments, types, and times — all queryable via the agent.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-cal">
+          <div class="fv-cal-row">
+            <div class="fv-day"></div><div class="fv-day"></div><div class="fv-day active"></div>
+            <div class="fv-day"></div><div class="fv-day"></div><div class="fv-day dim"></div><div class="fv-day dim"></div>
+          </div>
+          <div class="fv-cal-row">
+            <div class="fv-day"></div><div class="fv-day"></div><div class="fv-day"></div>
+            <div class="fv-day"></div><div class="fv-day"></div><div class="fv-day dim"></div><div class="fv-day dim"></div>
+          </div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+
+    <div class="feat-row fi" data-delay="200">
+      <span class="feat-num">05</span>
+      <div class="feat-body">
+        <div class="feat-title">Business Analytics</div>
+        <p class="feat-desc">Revenue trends, order distribution, stock levels, and category breakdown — all from live MongoDB data.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-chart">
+          <div class="fv-cbar"></div><div class="fv-cbar"></div><div class="fv-cbar"></div>
+          <div class="fv-cbar"></div><div class="fv-cbar"></div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+
+    <div class="feat-row fi" data-delay="250">
+      <span class="feat-num">06</span>
+      <div class="feat-body">
+        <div class="feat-title">MongoDB MCP Server</div>
+        <p class="feat-desc">The agent uses the Model Context Protocol to read and write Atlas collections with full tool transparency.</p>
+      </div>
+      <div class="feat-visual">
+        <div class="fv-db">
+          <div class="fv-dring"></div>
+          <div class="fv-dring"></div>
+          <div class="fv-dring"></div>
+        </div>
+      </div>
+      <span class="feat-arrow">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT SHOWCASE -->
+<section id="showcase">
+  <div class="sec-wrap">
+    <div class="showcase-head sec-head">
+      <span class="eyebrow fi">The product</span>
+      <h2 class="sec-h fi" data-delay="80">A complete business OS,<br>in your browser.</h2>
+    </div>
+  </div>
+
+  <div class="browser fi">
+    <div class="browser-bar">
+      <div class="browser-dots">
+        <div class="bdot"></div><div class="bdot"></div><div class="bdot"></div>
+      </div>
+      <div class="browser-url">opsagent-lac.vercel.app</div>
+    </div>
+    <div class="browser-body">
+      <div class="db-panel">
+        <div class="db-sec-lbl">Dashboard Overview</div>
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-lbl">Inventory Value</div>
+            <div class="kpi-val">$15,067</div>
+            <div class="kpi-sub">50 items tracked</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Pending Orders</div>
+            <div class="kpi-val hi">7</div>
+            <div class="kpi-sub">Needs attention</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Today's Appointments</div>
+            <div class="kpi-val">1</div>
+            <div class="kpi-sub">Scheduled today</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Low Stock</div>
+            <div class="kpi-stocked">✓ All stocked</div>
+            <div class="kpi-sub">No alerts</div>
+          </div>
+        </div>
+        <div class="db-sec-lbl">Recent Orders</div>
+        <table class="db-tbl">
+          <thead><tr><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Raj Patel</td><td>$50</td><td><span class="sbadge s-done">Completed</span></td></tr>
+            <tr><td>Pooja Gupta</td><td>$101</td><td><span class="sbadge s-pend">Pending</span></td></tr>
+            <tr><td>Suresh Iyer</td><td>$30</td><td><span class="sbadge s-pend">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ag-panel">
+        <div class="ag-hdr">
+          <div class="ag-name">AI Agent</div>
+          <div class="ag-tag">Powered by Gemini + MongoDB MCP</div>
+        </div>
+        <div class="ag-chat chat-area">
+          <div class="bubble bubble-u">how many pending orders?</div>
+          <div class="bubble bubble-a">
+            You have <strong>3 pending orders</strong> totalling <strong>$176</strong>.
+            <table class="a-tbl">
+              <thead><tr><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Pooja Gupta</td><td>$101</td><td><span class="sbadge s-pend sbadge-sm">Pending</span></td></tr>
+                <tr><td>Suresh Iyer</td><td>$30</td><td><span class="sbadge s-pend sbadge-sm">Pending</span></td></tr>
+                <tr><td>Amit Shah</td><td>$45</td><td><span class="sbadge s-pend sbadge-sm">Pending</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ag-foot ac-foot">
+          <div class="chips">
+            <span class="chip">Low stock</span>
+            <span class="chip">Pending orders</span>
+            <span class="chip">Summary</span>
+          </div>
+          <input class="a-input" type="text" placeholder='Try: "show low stock items..."' readonly>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="sec-wrap">
+    <div class="hiw-head">
+      <span class="eyebrow fi">How it works</span>
+      <h2 class="sec-h fi" data-delay="80">Three steps.<br>Zero complexity.</h2>
+    </div>
+  </div>
+  <div class="steps-grid">
+    <div class="step fi">
+      <span class="step-bg-n">01</span>
+      <div class="step-t">Type a command</div>
+      <p class="step-d">Ask anything in plain English. No syntax required.</p>
+      <div class="step-eg">
+        <div class="step-cmd">
+          <span class="step-cmd-prefix">&gt;</span>
+          "show low stock items"
+        </div>
+      </div>
+    </div>
+    <div class="step fi" data-delay="120">
+      <span class="step-bg-n">02</span>
+      <div class="step-t">Agent queries MongoDB</div>
+      <p class="step-d">Gemini picks the right MCP tool and queries Atlas in real time.</p>
+      <div class="step-eg">
+        <div class="step-tool">
+          <span class="tt-name">find_inventory_items</span>
+          <span class="tt-arg">filter: &#123; stock: "low" &#125;</span>
+        </div>
+      </div>
+    </div>
+    <div class="step fi" data-delay="240">
+      <span class="step-bg-n">03</span>
+      <div class="step-t">Structured results</div>
+      <p class="step-d">Data arrives as tables, counts, summaries — no fixed template.</p>
+      <div class="step-eg">
+        <div class="step-result">
+          <span class="sr-count">4</span>
+          <span class="sr-label">items with<br>low stock found</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<div class="tech">
+  <span class="tech-lbl">Built with</span>
+  <div class="pills">
+    <span class="pill">Gemini AI</span>
+    <span class="pill">MongoDB Atlas</span>
+    <span class="pill">MCP Server</span>
+    <span class="pill">React.js</span>
+    <span class="pill">Node.js</span>
+    <span class="pill">Vercel</span>
+  </div>
+</div>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-l">
+    <h2 class="cta-h fi">See it<br>working,<br><em>live.</em></h2>
+  </div>
+  <div class="cta-r">
+    <p class="cta-sub fi">The full app is deployed with real data. Try asking the agent anything — inventory, orders, appointments.</p>
+    <div class="cta-btns fi" data-delay="100">
+      <a class="btn-w" href="https://opsagent-lac.vercel.app" target="_blank" rel="noopener">Open Live Demo →</a>
+      <a class="btn-ow" href="https://github.com/chavda-dev/opsagent" target="_blank" rel="noopener">View GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="foot-logo">OpsAgent</span>
+  <div class="foot-links">
+    <a href="https://opsagent-lac.vercel.app" target="_blank" rel="noopener">Live Demo</a>
+    <a href="https://github.com/chavda-dev/opsagent" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://devpost.com" target="_blank" rel="noopener">Devpost</a>
+  </div>
+  <span class="foot-r">Google Cloud Rapid Agent Hackathon 2026</span>
+</footer>
+
+<script>
+(function(){
+  /* ── Hamburger ─────────────────────────────── */
+  var ham = document.getElementById('hamburger');
+  var mNav = document.getElementById('mobile-nav');
+  function closeMenu(){
+    mNav.classList.remove('open');ham.classList.remove('open');
+    ham.setAttribute('aria-expanded','false');document.body.style.overflow='';
+  }
+  if(ham&&mNav){
+    ham.addEventListener('click',function(){
+      var open=mNav.classList.toggle('open');
+      ham.classList.toggle('open',open);
+      ham.setAttribute('aria-expanded',open?'true':'false');
+      document.body.style.overflow=open?'hidden':'';
+    });
+    mNav.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu)});
+    document.addEventListener('click',function(e){
+      if(mNav.classList.contains('open')&&!mNav.contains(e.target)&&!ham.contains(e.target))closeMenu();
+    });
+    var lastY=0;
+    window.addEventListener('scroll',function(){
+      var y=window.scrollY;
+      if(Math.abs(y-lastY)>40&&mNav.classList.contains('open'))closeMenu();
+      lastY=y;
+    },{passive:true});
+  }
+
+  /* ── Fade-in observer ──────────────────────── */
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var d=parseInt(e.target.dataset.delay||0);
+        setTimeout(function(){e.target.classList.add('in')},d);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:.08,rootMargin:'0px 0px -24px 0px'});
+
+  document.querySelectorAll('.fi').forEach(function(el){
+    if(el.closest('.hero')){
+      setTimeout(function(){el.classList.add('in')},parseInt(el.dataset.delay||0)+60);
+    }else{obs.observe(el)}
+  });
+
+  /* ── Stat bar animation on scroll ─────────── */
+  var statObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var fill=e.target.querySelector('.stat-fill');
+        if(fill){
+          var w=parseFloat(fill.dataset.w||1);
+          fill.style.transitionDelay='200ms';
+          fill.style.transform='scaleX('+w+')';
+          fill.classList.add('visible');
+        }
+        statObs.unobserve(e.target);
+      }
+    });
+  },{threshold:.3});
+
+  document.querySelectorAll('.stat').forEach(function(s){statObs.observe(s)});
+
+  /* ── Close mobile nav on anchor links ─────── */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(){
+      if(mNav&&mNav.classList.contains('open'))closeMenu();
+    });
+  });
+})();
+</script>
+</body>
+</html>
